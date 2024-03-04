@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View } from 'react-native'
 import MapboxGL, { MapView, Camera, ShapeSource, LineLayer, PointAnnotation, UserLocation } from '@rnmapbox/maps';
+import Stop from './components/Stop';
+import { stops, BusStop } from './static_data/stops';
 
 MapboxGL.setAccessToken("sk.eyJ1IjoiZGxhY3VhZHJhIiwiYSI6ImNsdDR2aGVuNTA3dnUyc28wZTR6eHNvYWsifQ.fHJ54tKzq4-qSViPzvR5cA");
 
@@ -48,33 +50,19 @@ const lineString: GeoJSON.Feature = {
 
 const App = () => {
     const [route, setRoute] = useState<GeoJSON.Feature>(lineString);
-
     return (
       <>
         <MapView style={styles.matchParent}>
-          <Camera
-            defaultSettings={{
-              centerCoordinate: [-71.11847760632813, 42.37044385919086],
-              zoomLevel: 14
-              ,
-            }}
-          />
+          <Camera followZoomLevel={14} followUserLocation animationMode={'flyTo'} />
           <UserLocation/>
           <ShapeSource id="line-source" lineMetrics={true} shape={route}>
             <LineLayer id="line-layer" style={styles.lineLayer} />
           </ShapeSource>
-          <PointAnnotation
-          id="pin"
-          coordinate={[-71.114692, 42.374012]}
-        >
-          <View
-            style={{
-              height: 15,
-              width: 15,
-              backgroundColor: 'red',
-            }}>
-            </View>
-        </PointAnnotation>
+          {stops.map((value: BusStop) => {
+            return (
+              <Stop key={value.stop_id} id={value.stop_id} coordinate={[value.stop_lon, value.stop_lat]} />
+            )
+          })}
         </MapView>
       </>
     );
