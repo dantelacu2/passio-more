@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View } from 'react-native'
-import { MapView, Camera, ShapeSource, LineLayer, PointAnnotation } from '@rnmapbox/maps';
+import MapboxGL, { MapView, Camera, ShapeSource, LineLayer, PointAnnotation, UserLocation } from '@rnmapbox/maps';
+
+MapboxGL.setAccessToken("sk.eyJ1IjoiZGxhY3VhZHJhIiwiYSI6ImNsdDR2aGVuNTA3dnUyc28wZTR6eHNvYWsifQ.fHJ54tKzq4-qSViPzvR5cA");
 
 const styles = {
   matchParent: {
@@ -57,6 +59,7 @@ const App = () => {
               ,
             }}
           />
+          <UserLocation/>
           <ShapeSource id="line-source" lineMetrics={true} shape={route}>
             <LineLayer id="line-layer" style={styles.lineLayer} />
           </ShapeSource>
