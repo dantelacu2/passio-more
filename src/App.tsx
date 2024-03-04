@@ -1,58 +1,80 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useState } from 'react';
+import { View } from 'react-native'
+import { MapView, Camera, ShapeSource, LineLayer, PointAnnotation } from '@rnmapbox/maps';
 
-import React, { Component } from "react";
-import { StyleSheet, View, Image } from "react-native";
-import MapboxGL, { PointAnnotation } from "@rnmapbox/maps";
-
-MapboxGL.setAccessToken("sk.eyJ1IjoiZGxhY3VhZHJhIiwiYSI6ImNsdDR2aGVuNTA3dnUyc28wZTR6eHNvYWsifQ.fHJ54tKzq4-qSViPzvR5cA");
-
-const styles = StyleSheet.create({
-  page: {
+const styles = {
+  matchParent: {
     flex: 1,
   },
-  map: {
-    flex: 1
-  }
-});
+  lineLayer: {
+    lineColor: 'red',
+    lineCap: 'round',
+    lineJoin: 'round',
+    lineWidth: 5,
+  },
+};
 
-export default class App extends Component {
-  constructor(props: any) {
-    super(props);
-    this.state = { markerRef: null };
-  }
+const lineString: GeoJSON.Feature = {
+  type: 'Feature',
+  properties: {},
+  geometry: {
+    type: 'LineString',
+    coordinates: [
+        [
+            -71.11592630237446,
+            42.371424005380476
+        ],
+        [
+            -71.11670870225363,
+            42.370150650093876
+        ],
+        [
+            -71.11700351959949,
+            42.36965638023139
+        ],
+        [
+            -71.11718494565804,
+            42.369262637049786
+        ],
+        [
+            -71.11692414569862,
+            42.368759982592934
+        ]
+    ],
+  },
+};
 
-  componentDidMount() {
-    MapboxGL.setTelemetryEnabled(false);
-  }
+const App = () => {
+    const [route, setRoute] = useState<GeoJSON.Feature>(lineString);
 
-  render() {
     return (
-      <View style={styles.page}>
-        <MapboxGL.MapView  style={styles.map}>
-          {/* <MapboxGL.UserLocation/> */}
-          <MapboxGL.Camera followUserLocation followZoomLevel={12} />
-          <MapboxGL.PointAnnotation
-            id="pin"
-            coordinate={[42.374012, -71.114692]}
-          >
-            <View
-              style={{
-                height: 1000,
-                width: 1000,
-              }}>
-                <Image
-                  source={require("../assets/red-pin.png")}
-                  style={{ height: 54, width: 43.5 }}
-                />
-              </View>
-          </MapboxGL.PointAnnotation>
-        </MapboxGL.MapView>
-      </View>
+      <>
+        <MapView style={styles.matchParent}>
+          <Camera
+            defaultSettings={{
+              centerCoordinate: [-71.11847760632813, 42.37044385919086],
+              zoomLevel: 14
+              ,
+            }}
+          />
+          <ShapeSource id="line-source" lineMetrics={true} shape={route}>
+            <LineLayer id="line-layer" style={styles.lineLayer} />
+          </ShapeSource>
+          <PointAnnotation
+          id="pin"
+          coordinate={[-71.114692, 42.374012]}
+        >
+          <View
+            style={{
+              height: 15,
+              width: 15,
+              backgroundColor: 'red',
+            }}>
+            </View>
+        </PointAnnotation>
+        </MapView>
+      </>
     );
-  }
 }
+
+export default App;
