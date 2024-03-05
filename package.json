@@ -17,7 +17,9 @@
     "@rnmapbox/maps": "^10.1.16",
     "dotenv": "^16.4.5",
     "react": "18.2.0",
-    "react-native": "0.73.5"
+    "react-native": "0.73.5",
+    "react-native-elements": "^3.4.3",
+    "react-native-vector-icons": "^10.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

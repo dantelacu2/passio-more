@@ -6,7 +6,7 @@ export function getTripUpdates() {
       let response = tripUpdates;
     //   let responseJson = await response.json();
       let responseJson = response;
-      console.log("Passio API Called");
+      // console.log("Passio API Called");
       return responseJson.entity;
      } catch(error) {
       console.error(error);
