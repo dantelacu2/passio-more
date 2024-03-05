@@ -1,3 +1,4 @@
+import { Shape } from '../static_data/shapes';
 import { BusStop, stops } from '../static_data/stops';
 
 export interface StopTimeUpdate {
@@ -11,7 +12,7 @@ export interface TripUpdate {
     id: string;
     trip_update: {
         trip: {
-            tripId: string;
+            trip_id: string;
         }
         stop_time_update: StopTimeUpdate[]
     }
@@ -24,8 +25,7 @@ export const getTripUpdatesFromPassioJSON = (responseJson: any): TripUpdate[] =>
 export const computeDistanceBetweenCoordinates = (a: [number, number], b: [number, number]) => Math.hypot(b[0]-a[0], b[1]-a[1]);
 
 export const kClosestStops = (coord: [number, number], K: number) => {
-    const sqDist = (pointa: [number, number], pointb: [number, number]) => (pointa[0] - pointb[0]) ** 2 + (pointa[1] - pointb[1]) ** 2;
-    return stops.sort((a: BusStop, b: BusStop) => sqDist(coord, [a.stop_lat, a.stop_lon]) - sqDist(coord, [b.stop_lat, b.stop_lon])).slice(0, K);
+    return stops.sort((a: BusStop, b: BusStop) => computeDistanceBetweenCoordinates(coord, [a.stop_lon, a.stop_lat]) - computeDistanceBetweenCoordinates(coord, [b.stop_lon, b.stop_lat,])).slice(0, K);
 };
 
 /** Making the assumption that we want the closest stop */
@@ -41,4 +41,18 @@ export const findClosestStopIdToCoordinates = (coordinates: [number, number]): s
         }
     });
     return closestStopId;
+}
+
+export const findIndexClosestCoordinateToShapes = (coordinates: [number, number], shapes: Shape[]): number => {
+    let closestIndex: number = 0;
+    let smallestDistance: number = Infinity;
+    shapes.forEach((shape: Shape, index: number) => {
+        const stopCoords: [number, number] = [shape.shape_pt_lon, shape.shape_pt_lat];
+        const distance = computeDistanceBetweenCoordinates(coordinates, stopCoords);
+        if (distance < smallestDistance) {
+            smallestDistance = distance;
+            closestIndex = index;
+        }
+    });
+    return closestIndex;
 }

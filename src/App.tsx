@@ -21,43 +21,26 @@ const styles = {
   },
 };
 
-const lineString: GeoJSON.Feature = {
-  type: 'Feature',
-  properties: {},
-  geometry: {
-    type: 'LineString',
-    coordinates: [
-        [
-            -71.11592630237446,
-            42.371424005380476
-        ],
-        [
-            -71.11670870225363,
-            42.370150650093876
-        ],
-        [
-            -71.11700351959949,
-            42.36965638023139
-        ],
-        [
-            -71.11718494565804,
-            42.369262637049786
-        ],
-        [
-            -71.11692414569862,
-            42.368759982592934
-        ]
-    ],
-  },
+const createLineString = (coords: [number, number][] = []): GeoJSON.Feature => {
+  return {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'LineString',
+      coordinates: coords,
+    },
+  }
 };
 
 const App = () => {
-    const [route, setRoute] = useState<GeoJSON.Feature>(lineString);
+    const [route, setRoute] = useState<GeoJSON.Feature>(createLineString());
     const [userCoordinates, setUserCoordinates] = useState<[number, number]>([0, 0]);
 
     useEffect(() => {
       // console.log(getTripUpdatesFromPassioJSON(getTripUpdates()));
-      findRoutes("", userCoordinates, getTripUpdatesFromPassioJSON(getTripUpdates()));
+      console.log("start", userCoordinates);
+      const allCoords = findRoutes("", userCoordinates, getTripUpdatesFromPassioJSON(getTripUpdates()));
+      setRoute(createLineString(allCoords));
     }, [userCoordinates]);
 
     const closestStopId: string = findClosestStopIdToCoordinates(userCoordinates);
