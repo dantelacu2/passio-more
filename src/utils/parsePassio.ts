@@ -9,7 +9,7 @@ export interface StopTimeUpdate {
 
 export interface TripUpdate {
     id: string;
-    tripUpdate: {
+    trip_update: {
         trip: {
             tripId: string;
         }
