@@ -2,98 +2,98 @@
     "header": {
       "gtfs_realtime_version": "2.0",
       "incrementality": 0,
-      "timestamp": 1709586608
+      "timestamp": 1709652743
     },
     "entity": [
       {
         "id": "1",
         "trip_update": {
           "trip": {
-            "trip_id": "670551"
+            "trip_id": "670543"
           },
           "stop_time_update": [
             {
               "stop_id": "58343",
               "arrival": {
-                "time": 1709587553
+                "time": 1709652828
               }
             },
             {
               "stop_id": "63189",
               "arrival": {
-                "time": 1709587621
+                "time": 1709652881
               }
             },
             {
               "stop_id": "5039",
               "arrival": {
-                "time": 1709587691
+                "time": 1709652952
               }
             },
             {
               "stop_id": "5040",
               "arrival": {
-                "time": 1709587782
+                "time": 1709653043
               }
             },
             {
               "stop_id": "5041",
               "arrival": {
-                "time": 1709586544
+                "time": 1709653084
               }
             },
             {
               "stop_id": "5042",
               "arrival": {
-                "time": 1709586663
+                "time": 1709653185
               }
             },
             {
               "stop_id": "5049",
               "arrival": {
-                "time": 1709586890
+                "time": 1709653409
               }
             },
             {
               "stop_id": "23509",
               "arrival": {
-                "time": 1709587084
+                "time": 1709653573
               }
             },
             {
               "stop_id": "5050",
               "arrival": {
-                "time": 1709587133
+                "time": 1709653620
               }
             },
             {
               "stop_id": "58344",
               "arrival": {
-                "time": 1709587181
+                "time": 1709653658
               }
             },
             {
               "stop_id": "5054",
               "arrival": {
-                "time": 1709587286
+                "time": 1709653748
               }
             },
             {
               "stop_id": "23930",
               "arrival": {
-                "time": 1709587378
+                "time": 1709653839
               }
             },
             {
               "stop_id": "63190",
               "arrival": {
-                "time": 1709587434
+                "time": 1709652705
               }
             },
             {
               "stop_id": "58343",
               "arrival": {
-                "time": 1709587535
+                "time": 1709652809
               }
             }
           ]
@@ -103,19 +103,49 @@
         "id": "2",
         "trip_update": {
           "trip": {
-            "trip_id": "661303"
+            "trip_id": "670535"
           },
           "stop_time_update": [
             {
-              "stop_id": "5044",
+              "stop_id": "5049",
               "arrival": {
-                "time": 1709586013
+                "time": 1709652340
               }
             },
             {
-              "stop_id": "5039",
+              "stop_id": "23509",
               "arrival": {
-                "time": 1709586023
+                "time": 1709652516
+              }
+            },
+            {
+              "stop_id": "5050",
+              "arrival": {
+                "time": 1709652563
+              }
+            },
+            {
+              "stop_id": "58344",
+              "arrival": {
+                "time": 1709652603
+              }
+            },
+            {
+              "stop_id": "5054",
+              "arrival": {
+                "time": 1709652695
+              }
+            },
+            {
+              "stop_id": "23930",
+              "arrival": {
+                "time": 1709652790
+              }
+            },
+            {
+              "stop_id": "63190",
+              "arrival": {
+                "time": 1709652849
               }
             }
           ]
@@ -125,61 +155,85 @@
         "id": "3",
         "trip_update": {
           "trip": {
-            "trip_id": "661304"
+            "trip_id": "670536"
           },
           "stop_time_update": [
             {
+              "stop_id": "63189",
+              "arrival": {
+                "time": 1709653618
+              }
+            },
+            {
               "stop_id": "5039",
               "arrival": {
-                "time": 1709586665
+                "time": 1709653691
               }
             },
             {
-              "stop_id": "5049",
+              "stop_id": "5040",
               "arrival": {
-                "time": 1709586669
+                "time": 1709653782
               }
             },
             {
-              "stop_id": "23509",
+              "stop_id": "5041",
               "arrival": {
-                "time": 1709586808
-              }
-            },
-            {
-              "stop_id": "5050",
-              "arrival": {
-                "time": 1709586840
+                "time": 1709653841
               }
             },
             {
               "stop_id": "5042",
               "arrival": {
-                "time": 1709586906
+                "time": 1709653963
               }
             },
             {
-              "stop_id": "5043",
+              "stop_id": "5049",
               "arrival": {
-                "time": 1709586993
+                "time": 1709652930
               }
             },
             {
-              "stop_id": "6248",
+              "stop_id": "23509",
               "arrival": {
-                "time": 1709587043
+                "time": 1709653106
               }
             },
             {
-              "stop_id": "5044",
+              "stop_id": "5050",
               "arrival": {
-                "time": 1709587081
+                "time": 1709653154
               }
             },
             {
-              "stop_id": "5039",
+              "stop_id": "58344",
               "arrival": {
-                "time": 1709587083
+                "time": 1709653193
+              }
+            },
+            {
+              "stop_id": "5054",
+              "arrival": {
+                "time": 1709653286
+              }
+            },
+            {
+              "stop_id": "23930",
+              "arrival": {
+                "time": 1709653380
+              }
+            },
+            {
+              "stop_id": "63190",
+              "arrival": {
+                "time": 1709653440
+              }
+            },
+            {
+              "stop_id": "58343",
+              "arrival": {
+                "time": 1709653542
               }
             }
           ]
@@ -189,61 +243,67 @@
         "id": "4",
         "trip_update": {
           "trip": {
-            "trip_id": "661305"
+            "trip_id": "670378"
           },
           "stop_time_update": [
             {
-              "stop_id": "5039",
+              "stop_id": "5046",
               "arrival": {
-                "time": 1709587585
+                "time": 1709652689
               }
             },
             {
-              "stop_id": "5049",
+              "stop_id": "5047",
               "arrival": {
-                "time": 1709586576
+                "time": 1709652788
               }
             },
             {
-              "stop_id": "23509",
+              "stop_id": "5048",
               "arrival": {
-                "time": 1709586713
-              }
-            },
-            {
-              "stop_id": "5050",
-              "arrival": {
-                "time": 1709586745
+                "time": 1709652864
               }
             },
             {
               "stop_id": "5042",
               "arrival": {
-                "time": 1709586811
+                "time": 1709652978
               }
             },
             {
               "stop_id": "5043",
               "arrival": {
-                "time": 1709586898
+                "time": 1709653071
               }
             },
             {
               "stop_id": "6248",
               "arrival": {
-                "time": 1709586949
+                "time": 1709653128
               }
             },
             {
               "stop_id": "5044",
               "arrival": {
-                "time": 1709586988
+                "time": 1709653156
               }
             },
             {
-              "stop_id": "5039",
+              "stop_id": "5045",
               "arrival": {
-                "time": 1709586998
+                "time": 1709653341
+              }
+            },
+            {
+              "stop_id": "6854",
+              "arrival": {
+                "time": 1709653414
+              }
+            },
+            {
+              "stop_id": "5046",
+              "arrival": {
+                "time": 1709652686
               }
             }
           ]
@@ -253,85 +313,25 @@
         "id": "5",
         "trip_update": {
           "trip": {
-            "trip_id": "661211"
+            "trip_id": "661201"
           },
           "stop_time_update": [
             {
-              "stop_id": "58343",
-              "arrival": {
-                "time": 1709586721
-              }
-            },
-            {
-              "stop_id": "63189",
-              "arrival": {
-                "time": 1709586777
-              }
-            },
-            {
-              "stop_id": "5039",
-              "arrival": {
-                "time": 1709586847
-              }
-            },
-            {
-              "stop_id": "5040",
-              "arrival": {
-                "time": 1709586954
-              }
-            },
-            {
-              "stop_id": "5041",
-              "arrival": {
-                "time": 1709587008
-              }
-            },
-            {
-              "stop_id": "5042",
-              "arrival": {
-                "time": 1709587150
-              }
-            },
-            {
-              "stop_id": "5043",
-              "arrival": {
-                "time": 1709587263
-              }
-            },
-            {
-              "stop_id": "6248",
-              "arrival": {
-                "time": 1709587330
-              }
-            },
-            {
-              "stop_id": "5044",
-              "arrival": {
-                "time": 1709587368
-              }
-            },
-            {
               "stop_id": "5045",
               "arrival": {
-                "time": 1709587593
+                "time": 1709652338
               }
             },
             {
               "stop_id": "6854",
               "arrival": {
-                "time": 1709587679
+                "time": 1709652420
               }
             },
             {
               "stop_id": "5036",
               "arrival": {
-                "time": 1709586588
-              }
-            },
-            {
-              "stop_id": "58343",
-              "arrival": {
-                "time": 1709586731
+                "time": 1709652555
               }
             }
           ]
@@ -341,13 +341,85 @@
         "id": "6",
         "trip_update": {
           "trip": {
-            "trip_id": "234467"
+            "trip_id": "661203"
           },
           "stop_time_update": [
             {
-              "stop_id": "5048",
+              "stop_id": "58343",
               "arrival": {
-                "time": 1709586102
+                "time": 1709653467
+              }
+            },
+            {
+              "stop_id": "63189",
+              "arrival": {
+                "time": 1709653520
+              }
+            },
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709653594
+              }
+            },
+            {
+              "stop_id": "5040",
+              "arrival": {
+                "time": 1709653677
+              }
+            },
+            {
+              "stop_id": "5041",
+              "arrival": {
+                "time": 1709653731
+              }
+            },
+            {
+              "stop_id": "5042",
+              "arrival": {
+                "time": 1709652677
+              }
+            },
+            {
+              "stop_id": "5043",
+              "arrival": {
+                "time": 1709652766
+              }
+            },
+            {
+              "stop_id": "6248",
+              "arrival": {
+                "time": 1709652839
+              }
+            },
+            {
+              "stop_id": "5044",
+              "arrival": {
+                "time": 1709652881
+              }
+            },
+            {
+              "stop_id": "5045",
+              "arrival": {
+                "time": 1709653105
+              }
+            },
+            {
+              "stop_id": "6854",
+              "arrival": {
+                "time": 1709653187
+              }
+            },
+            {
+              "stop_id": "5036",
+              "arrival": {
+                "time": 1709653323
+              }
+            },
+            {
+              "stop_id": "58343",
+              "arrival": {
+                "time": 1709653477
               }
             }
           ]
@@ -357,19 +429,471 @@
         "id": "7",
         "trip_update": {
           "trip": {
-            "trip_id": "234468"
+            "trip_id": "661293"
           },
           "stop_time_update": [
             {
-              "stop_id": "58381",
+              "stop_id": "23509",
               "arrival": {
-                "time": 1709587082
+                "time": 1709652191
               }
             },
             {
+              "stop_id": "5050",
+              "arrival": {
+                "time": 1709652229
+              }
+            },
+            {
+              "stop_id": "5042",
+              "arrival": {
+                "time": 1709652297
+              }
+            },
+            {
+              "stop_id": "5043",
+              "arrival": {
+                "time": 1709652381
+              }
+            },
+            {
+              "stop_id": "6248",
+              "arrival": {
+                "time": 1709652432
+              }
+            },
+            {
+              "stop_id": "5044",
+              "arrival": {
+                "time": 1709652466
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "8",
+        "trip_update": {
+          "trip": {
+            "trip_id": "661294"
+          },
+          "stop_time_update": [
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709653236
+              }
+            },
+            {
+              "stop_id": "5049",
+              "arrival": {
+                "time": 1709653242
+              }
+            },
+            {
+              "stop_id": "23509",
+              "arrival": {
+                "time": 1709653394
+              }
+            },
+            {
+              "stop_id": "5050",
+              "arrival": {
+                "time": 1709653432
+              }
+            },
+            {
+              "stop_id": "5042",
+              "arrival": {
+                "time": 1709653500
+              }
+            },
+            {
+              "stop_id": "5043",
+              "arrival": {
+                "time": 1709653584
+              }
+            },
+            {
+              "stop_id": "6248",
+              "arrival": {
+                "time": 1709653635
+              }
+            },
+            {
+              "stop_id": "5044",
+              "arrival": {
+                "time": 1709652705
+              }
+            },
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709652673
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "9",
+        "trip_update": {
+          "trip": {
+            "trip_id": "670184"
+          },
+          "stop_time_update": [
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709652923
+              }
+            },
+            {
+              "stop_id": "5049",
+              "arrival": {
+                "time": 1709652928
+              }
+            },
+            {
+              "stop_id": "23509",
+              "arrival": {
+                "time": 1709653068
+              }
+            },
+            {
+              "stop_id": "5050",
+              "arrival": {
+                "time": 1709653106
+              }
+            },
+            {
+              "stop_id": "5042",
+              "arrival": {
+                "time": 1709653178
+              }
+            },
+            {
+              "stop_id": "5043",
+              "arrival": {
+                "time": 1709653264
+              }
+            },
+            {
+              "stop_id": "6248",
+              "arrival": {
+                "time": 1709653320
+              }
+            },
+            {
+              "stop_id": "5044",
+              "arrival": {
+                "time": 1709653359
+              }
+            },
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709652309
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "10",
+        "trip_update": {
+          "trip": {
+            "trip_id": "670185"
+          },
+          "stop_time_update": [
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709652964
+              }
+            },
+            {
+              "stop_id": "5049",
+              "arrival": {
+                "time": 1709652968
+              }
+            },
+            {
+              "stop_id": "23509",
+              "arrival": {
+                "time": 1709653109
+              }
+            },
+            {
+              "stop_id": "5050",
+              "arrival": {
+                "time": 1709653147
+              }
+            },
+            {
+              "stop_id": "5042",
+              "arrival": {
+                "time": 1709653218
+              }
+            },
+            {
+              "stop_id": "5043",
+              "arrival": {
+                "time": 1709653304
+              }
+            },
+            {
+              "stop_id": "6248",
+              "arrival": {
+                "time": 1709653361
+              }
+            },
+            {
+              "stop_id": "5044",
+              "arrival": {
+                "time": 1709653399
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "11",
+        "trip_update": {
+          "trip": {
+            "trip_id": "670581"
+          },
+          "stop_time_update": [
+            {
+              "stop_id": "63189",
+              "arrival": {
+                "time": 1709653020
+              }
+            },
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709653086
+              }
+            },
+            {
+              "stop_id": "5040",
+              "arrival": {
+                "time": 1709653178
+              }
+            },
+            {
+              "stop_id": "5041",
+              "arrival": {
+                "time": 1709653192
+              }
+            },
+            {
+              "stop_id": "154627",
+              "arrival": {
+                "time": 1709653326
+              }
+            },
+            {
+              "stop_id": "5045",
+              "arrival": {
+                "time": 1709653339
+              }
+            },
+            {
+              "stop_id": "6854",
+              "arrival": {
+                "time": 1709652710
+              }
+            },
+            {
+              "stop_id": "5036",
+              "arrival": {
+                "time": 1709652852
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "12",
+        "trip_update": {
+          "trip": {
+            "trip_id": "670206"
+          },
+          "stop_time_update": [
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709652968
+              }
+            },
+            {
+              "stop_id": "5049",
+              "arrival": {
+                "time": 1709652973
+              }
+            },
+            {
+              "stop_id": "23509",
+              "arrival": {
+                "time": 1709653106
+              }
+            },
+            {
+              "stop_id": "5050",
+              "arrival": {
+                "time": 1709653140
+              }
+            },
+            {
+              "stop_id": "5042",
+              "arrival": {
+                "time": 1709653199
+              }
+            },
+            {
+              "stop_id": "5043",
+              "arrival": {
+                "time": 1709653273
+              }
+            },
+            {
+              "stop_id": "6248",
+              "arrival": {
+                "time": 1709653324
+              }
+            },
+            {
+              "stop_id": "5044",
+              "arrival": {
+                "time": 1709653354
+              }
+            },
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709652357
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "13",
+        "trip_update": {
+          "trip": {
+            "trip_id": "670575"
+          },
+          "stop_time_update": [
+            {
+              "stop_id": "58343",
+              "arrival": {
+                "time": 1709652263
+              }
+            },
+            {
+              "stop_id": "63189",
+              "arrival": {
+                "time": 1709652312
+              }
+            },
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709652384
+              }
+            },
+            {
+              "stop_id": "5040",
+              "arrival": {
+                "time": 1709652471
+              }
+            },
+            {
+              "stop_id": "58343",
+              "arrival": {
+                "time": 1709652273
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "14",
+        "trip_update": {
+          "trip": {
+            "trip_id": "670576"
+          },
+          "stop_time_update": [
+            {
+              "stop_id": "58343",
+              "arrival": {
+                "time": 1709652698
+              }
+            },
+            {
+              "stop_id": "63189",
+              "arrival": {
+                "time": 1709652743
+              }
+            },
+            {
+              "stop_id": "5039",
+              "arrival": {
+                "time": 1709652813
+              }
+            },
+            {
+              "stop_id": "5040",
+              "arrival": {
+                "time": 1709652897
+              }
+            },
+            {
+              "stop_id": "5041",
+              "arrival": {
+                "time": 1709652911
+              }
+            },
+            {
+              "stop_id": "154627",
+              "arrival": {
+                "time": 1709653047
+              }
+            },
+            {
+              "stop_id": "5045",
+              "arrival": {
+                "time": 1709653062
+              }
+            },
+            {
+              "stop_id": "58343",
+              "arrival": {
+                "time": 1709652673
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "15",
+        "trip_update": {
+          "trip": {
+            "trip_id": "259112"
+          },
+          "stop_time_update": [
+            {
               "stop_id": "5048",
               "arrival": {
-                "time": 1709586545
+                "time": 1709653222
+              }
+            },
+            {
+              "stop_id": "58381",
+              "arrival": {
+                "time": 1709652958
               }
             }
           ]

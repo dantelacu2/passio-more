@@ -37,10 +37,8 @@ const App = () => {
     const [userCoordinates, setUserCoordinates] = useState<[number, number]>([0, 0]);
 
     useEffect(() => {
-      // console.log(getTripUpdatesFromPassioJSON(getTripUpdates()));
-      console.log("start", userCoordinates);
-      const allCoords = findRoutes("", userCoordinates, getTripUpdatesFromPassioJSON(getTripUpdates()));
-      setRoute(createLineString(allCoords));
+      const allPotentialTrips = findRoutes("", userCoordinates, getTripUpdatesFromPassioJSON(getTripUpdates()));
+      setRoute(createLineString(allPotentialTrips[0].shapes));
     }, [userCoordinates]);
 
     const closestStopId: string = findClosestStopIdToCoordinates(userCoordinates);
@@ -49,7 +47,7 @@ const App = () => {
       <>
         <MapView style={styles.matchParent}>
           <Camera followZoomLevel={14} followUserLocation animationMode={'flyTo'} />
-          <UserLocation onUpdate={(loc: MapboxGL.Location) => setUserCoordinates([loc.coords.longitude, loc.coords.latitude])} />
+          <UserLocation showsUserHeadingIndicator onUpdate={(loc: MapboxGL.Location) => setUserCoordinates([loc.coords.longitude, loc.coords.latitude])} />
           <ShapeSource id="line-source" lineMetrics shape={route}>
             <LineLayer id="line-layer" style={styles.lineLayer} />
           </ShapeSource>

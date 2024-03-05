@@ -1,4 +1,4 @@
-import { trips } from "../static_data/trips";
+import { Trip, trips } from "../static_data/trips";
 import { Shape, shapes } from "../static_data/shapes";
 import { BusStop, stops } from "../static_data/stops";
 import { findClosestStopIdToCoordinates, findIndexClosestCoordinateToShapes, kClosestStops, StopTimeUpdate } from "./parsePassio";
@@ -8,6 +8,7 @@ interface FullTrip {
     tripUpdate: TripUpdate;
     startStop: string;
     endStop: string;
+    shapes?: [number, number][]
 }
 
 /** Lookup location using the Mapbox API */
@@ -35,13 +36,14 @@ interface Dictionary<T> {
     [Key: string]: T;
 }
 
-const filterTripsOnSameRoute = (trips: FullTrip[]): FullTrip[] => {
+const filterTripsOnSameRoute = (allTripUpdates: FullTrip[]): FullTrip[] => {
     const newTripUpdates: FullTrip[] = [];
-    const endStopDict: Dictionary<string> = {}
-    trips.forEach((trip) => {
-        if (!(trip.endStop in endStopDict)) {
-            newTripUpdates.push(trip);
-            endStopDict[trip.endStop] = trip.endStop;
+    const routeDict: Dictionary<number> = {}
+    allTripUpdates.forEach((tripUpdate: FullTrip) => {
+        const route_id = trips.find((trip: Trip) => trip.trip_id.toString() === tripUpdate.tripUpdate.trip_update.trip.trip_id)?.route_id;
+        if (route_id && !(route_id in routeDict)) {
+            newTripUpdates.push(tripUpdate);
+            routeDict[route_id] = route_id;
         }
     });
     return newTripUpdates;
@@ -55,7 +57,7 @@ const mapShapesToListOfCoordinates = (shapes: Shape[]): [number, number][] => {
     return coords;
 }
 
-const trimShapesByStartAndEndStop = (shapes: Shape[], startStopId: string, endStopId: string): Shape[] => {
+const trimShapesByStartAndEndStopId = (shapes: Shape[], startStopId: string, endStopId: string): Shape[] => {
     const startStop: BusStop | undefined = stops.find(stop => stop.stop_id === startStopId);
     const endStop: BusStop | undefined = stops.find(stop => stop.stop_id === endStopId);
 
@@ -64,21 +66,34 @@ const trimShapesByStartAndEndStop = (shapes: Shape[], startStopId: string, endSt
 
     const startIndex = findIndexClosestCoordinateToShapes(startStopCoords, shapes);
     const endIndex = findIndexClosestCoordinateToShapes(endStopCoords, shapes);
-    return shapes.slice(startIndex, shapes.length - 1);
+    
+    if (endIndex >= startIndex) {
+        return shapes.slice(startIndex, endIndex);
+    }
+    // Route wraps around sequence
+    return shapes.slice(startIndex, shapes.length - 1).concat(shapes.slice(0, endIndex));
 }
 
+export const addShapesToTrips = (fullTrips: FullTrip[]): FullTrip[] => {
+    const updatedFullTrips: FullTrip[] = [];
+    fullTrips.forEach((fullTrip: FullTrip) => {
+        const tripId = fullTrip.tripUpdate.trip_update.trip.trip_id;
+        const shapeId = trips.find((trip) => trip.trip_id.toString() === tripId.toString())?.shape_id;
+        const allShapesForTrip = shapes.filter((shape) => shape.shape_id === shapeId);
+        const shapesForRoute = trimShapesByStartAndEndStopId(allShapesForTrip, fullTrip.startStop, fullTrip.endStop);
+        updatedFullTrips.push({ ...fullTrip, shapes: mapShapesToListOfCoordinates(shapesForRoute) });
+    });
+    return updatedFullTrips;
+}
 
-export const findRoutes = (query: string, startCoords: [number, number], tripUpdates: TripUpdate[]) => {
-    const coordsOfDestination = lookupQuery(query);
+export const findRoutes = (destinationQuery: string, startCoords: [number, number], tripUpdates: TripUpdate[]): FullTrip[] => {
+    const coordsOfDestination = lookupQuery(destinationQuery);
     const destinationStop = findClosestStopIdToCoordinates(coordsOfDestination);
     const allTripsWithDestinationStop = findActiveTripsThatHaveStopId(destinationStop, tripUpdates);
     const potentialStarts = kClosestStops(startCoords, 8);
-    console.log(potentialStarts.map((start) => start.stop_id))
+
     const allTripsWithStartAndStop = findAllPotentialTrips(potentialStarts, destinationStop, allTripsWithDestinationStop);
     const allTripsWithStartAndStopFilteredForDuplicates = filterTripsOnSameRoute(allTripsWithStartAndStop);
-    const tripId: string = allTripsWithStartAndStopFilteredForDuplicates[0].tripUpdate.trip_update.trip.trip_id;
-    const shapeId = trips.find((trip) => trip.trip_id.toString() === tripId.toString())?.shape_id;
-    const allShapesForTrip = shapes.filter((shape) => shape.shape_id === shapeId);
-    const shapesForRoute = trimShapesByStartAndEndStop(allShapesForTrip, allTripsWithStartAndStopFilteredForDuplicates[0].startStop, allTripsWithStartAndStopFilteredForDuplicates[0].endStop);
-    return mapShapesToListOfCoordinates(shapesForRoute);
+
+    return addShapesToTrips(allTripsWithStartAndStopFilteredForDuplicates);
 }
