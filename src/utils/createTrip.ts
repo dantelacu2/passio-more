@@ -3,12 +3,16 @@ import { Shape, shapes } from "../static_data/shapes";
 import { BusStop, stops } from "../static_data/stops";
 import { findClosestStopIdToCoordinates, findIndexClosestCoordinateToShapes, kClosestStops, StopTimeUpdate } from "./parsePassio";
 import { TripUpdate } from "./parsePassio";
+import { WalkingDirections } from "../types/mapbox";
+import { getWalkingDirections } from "../apis/MapboxDirectionsAPI";
 
 interface FullTrip {
     tripUpdate: TripUpdate;
     startStop: string;
     endStop: string;
     shapes?: [number, number][]
+    directionsToStartStop?: WalkingDirections;
+    directionsFromEndStop?: WalkingDirections;
 }
 
 /** Lookup location using the Mapbox API */
@@ -57,12 +61,14 @@ const mapShapesToListOfCoordinates = (shapes: Shape[]): [number, number][] => {
     return coords;
 }
 
-const trimShapesByStartAndEndStopId = (shapes: Shape[], startStopId: string, endStopId: string): Shape[] => {
-    const startStop: BusStop | undefined = stops.find(stop => stop.stop_id === startStopId);
-    const endStop: BusStop | undefined = stops.find(stop => stop.stop_id === endStopId);
+const getCoordinatesFromBusStopId = (stopId: string): [number, number] => {
+    const stop: BusStop | undefined = stops.find(stop => stop.stop_id === stopId);
+    return [stop ? stop.stop_lon: 0, stop ? stop.stop_lat: 0]
+}
 
-    const startStopCoords: [number, number] = [startStop ? startStop.stop_lon: 0, startStop ? startStop.stop_lat: 0];
-    const endStopCoords: [number, number] = [endStop ? endStop.stop_lon: 0, endStop ? endStop.stop_lat: 0];
+const trimShapesByStartAndEndStopId = (shapes: Shape[], startStopId: string, endStopId: string): Shape[] => {
+    const startStopCoords = getCoordinatesFromBusStopId(startStopId);
+    const endStopCoords = getCoordinatesFromBusStopId(endStopId);
 
     const startIndex = findIndexClosestCoordinateToShapes(startStopCoords, shapes);
     const endIndex = findIndexClosestCoordinateToShapes(endStopCoords, shapes);
@@ -86,7 +92,15 @@ export const addShapesToTrips = (fullTrips: FullTrip[]): FullTrip[] => {
     return updatedFullTrips;
 }
 
-export const findRoutes = (destinationQuery: string, startCoords: [number, number], tripUpdates: TripUpdate[]): FullTrip[] => {
+const attachWalkingDirectionsToTrips = async (trips: FullTrip[], userCoords: [number, number]): Promise<FullTrip[]> => {
+    return Promise.all(trips.map(async (trip) => {
+        const busStopCoords = getCoordinatesFromBusStopId(trip.startStop);
+        const walkingDirections = await getWalkingDirections(userCoords, busStopCoords);
+        return { ...trip, directionsToStartStop: walkingDirections }
+    }));
+}
+
+export const findRoutes = async (destinationQuery: string, startCoords: [number, number], tripUpdates: TripUpdate[]): Promise<FullTrip[]> => {
     const coordsOfDestination = lookupQuery(destinationQuery);
     const destinationStop = findClosestStopIdToCoordinates(coordsOfDestination);
     const allTripsWithDestinationStop = findActiveTripsThatHaveStopId(destinationStop, tripUpdates);
@@ -95,5 +109,7 @@ export const findRoutes = (destinationQuery: string, startCoords: [number, numbe
     const allTripsWithStartAndStop = findAllPotentialTrips(potentialStarts, destinationStop, allTripsWithDestinationStop);
     const allTripsWithStartAndStopFilteredForDuplicates = filterTripsOnSameRoute(allTripsWithStartAndStop);
 
-    return addShapesToTrips(allTripsWithStartAndStopFilteredForDuplicates);
+    const allTripsWithShapes = addShapesToTrips(allTripsWithStartAndStopFilteredForDuplicates);
+
+    return attachWalkingDirectionsToTrips(allTripsWithShapes, startCoords);
 }
