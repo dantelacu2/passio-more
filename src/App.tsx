@@ -5,6 +5,7 @@ import Stop from './components/Stop';
 import { stops, BusStop } from './static_data/stops';
 import { getTripUpdates } from './apis/PassioAPI';
 import { findClosestStopIdToCoordinates, getTripUpdatesFromPassioJSON } from './utils/parsePassio';
+import { findRoutes } from './utils/createTrip';
 
 MapboxGL.setAccessToken("sk.eyJ1IjoiZGxhY3VhZHJhIiwiYSI6ImNsdDR2aGVuNTA3dnUyc28wZTR6eHNvYWsifQ.fHJ54tKzq4-qSViPzvR5cA");
 
@@ -55,8 +56,9 @@ const App = () => {
     const [userCoordinates, setUserCoordinates] = useState<[number, number]>([0, 0]);
 
     useEffect(() => {
-      console.log(getTripUpdatesFromPassioJSON(getTripUpdates()));
-    }, []);
+      // console.log(getTripUpdatesFromPassioJSON(getTripUpdates()));
+      findRoutes("", userCoordinates, getTripUpdatesFromPassioJSON(getTripUpdates()));
+    }, [userCoordinates]);
 
     const closestStopId: string = findClosestStopIdToCoordinates(userCoordinates);
 

@@ -1,6 +1,6 @@
 const tripUpdates = require('../static_data/tripUpdates.json');
 
-export async function getTripUpdates() {
+export function getTripUpdates() {
     try {
     //   let response = await fetch('https://passio3.com/harvard/passioTransit/gtfs/realtime/tripUpdates.json');
       let response = tripUpdates;

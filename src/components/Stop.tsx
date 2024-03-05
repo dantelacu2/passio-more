@@ -23,7 +23,7 @@ interface Props {
 const Stop = (props: Props) => {
     const { id, isColored } = props;
     const pointAnnotation = useRef<PointAnnotation>(null);
-    const stopObject = stops.find(stop => stop.stop_id === id);
+    const stopObject: BusStop = stops.find(stop => stop.stop_id === id);
     const coord: [number, number] = [stopObject.stop_lon, stopObject.stop_lat]
 
     const uri = isColored ? 'https://www.clipartmax.com/png/small/46-463589_google-map-pin-yellow-google-map-pin.png' : 'https://www.clipartmax.com/png/middle/5-51442_white-map-pin-png.png'

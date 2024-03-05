@@ -23,6 +23,12 @@ export const getTripUpdatesFromPassioJSON = (responseJson: any): TripUpdate[] =>
 
 export const computeDistanceBetweenCoordinates = (a: [number, number], b: [number, number]) => Math.hypot(b[0]-a[0], b[1]-a[1]);
 
+export const kClosestStops = (coord: [number, number], K: number) => {
+    const sqDist = (pointa: [number, number], pointb: [number, number]) => (pointa[0] - pointb[0]) ** 2 + (pointa[1] - pointb[1]) ** 2;
+    return stops.sort((a: BusStop, b: BusStop) => sqDist(coord, [a.stop_lat, a.stop_lon]) - sqDist(coord, [b.stop_lat, b.stop_lon])).slice(0, K);
+};
+
+/** Making the assumption that we want the closest stop */
 export const findClosestStopIdToCoordinates = (coordinates: [number, number]): string => {
     let closestStopId: string = "";
     let smallestDistance: number = Infinity;
