@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { View } from 'react-native'
+import React, { useState, useRef } from 'react';
+import { View, Image } from 'react-native'
 import MapboxGL, { MapView, Camera, ShapeSource, LineLayer, PointAnnotation, UserLocation } from '@rnmapbox/maps';
+import { BusStop, stops } from '../static_data/stops';
 
 const styles = {
   matchParent: {
@@ -15,23 +16,30 @@ const styles = {
 };
 
 interface Props {
-    coordinate: [number, number],
     id: string,
+    isColored: boolean,
 }
 
 const Stop = (props: Props) => {
-    const { coordinate, id } = props;
+    const { id, isColored } = props;
+    const pointAnnotation = useRef<PointAnnotation>(null);
+    const stopObject = stops.find(stop => stop.stop_id === id);
+    const coord: [number, number] = [stopObject.stop_lon, stopObject.stop_lat]
+
+    const uri = isColored ? 'https://www.clipartmax.com/png/small/46-463589_google-map-pin-yellow-google-map-pin.png' : 'https://www.clipartmax.com/png/middle/5-51442_white-map-pin-png.png'
     return (
         <PointAnnotation
             id={id}
-            coordinate={coordinate}
+            coordinate={coord}
+            ref={pointAnnotation}
          >
-        <View
-            style={{
-                height: 15,
-                width: 15,
-                backgroundColor: 'red',
-            }}>
+        <View>
+            <Image
+            source={{ uri: uri }}
+            style={{ height: 30, width: 20 }}
+            onLoad={() => pointAnnotation.current?.refresh()}
+            fadeDuration={0}
+            />
         </View>
     </PointAnnotation>
     );

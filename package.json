@@ -10,6 +10,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.11",
+    "@mui/material": "^5.15.11",
     "@rnmapbox/maps": "^10.1.16",
     "dotenv": "^16.4.5",
     "react": "18.2.0",
