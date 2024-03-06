@@ -6107,6 +6107,13 @@ react-native-dotenv@^3.4.11:
   dependencies:
     dotenv "^16.4.5"
 
+react-native-element-dropdown@^2.10.1:
+  version "2.10.1"
+  resolved "https://registry.npmjs.org/react-native-element-dropdown/-/react-native-element-dropdown-2.10.1.tgz"
+  integrity sha512-7J3K6T1LZo5H2rsEdAPpYDwhgog4UvatFq8bsW3dCrd2oyXiftn83gcQP1NKRYl4QMyb4WCMXIf+FqmZzS4o/Q==
+  dependencies:
+    lodash "^4.17.21"
+
 react-native-elements@^3.4.3:
   version "3.4.3"
   resolved "https://registry.npmjs.org/react-native-elements/-/react-native-elements-3.4.3.tgz"

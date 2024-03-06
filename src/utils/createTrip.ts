@@ -6,7 +6,7 @@ import { TripUpdate } from "./parsePassio";
 import { WalkingDirections } from "../types/mapbox";
 import { getWalkingDirections } from "../apis/MapboxDirectionsAPI";
 
-interface FullTrip {
+export interface FullTrip {
     tripUpdate: TripUpdate;
     startStop: string;
     endStop: string;
@@ -111,5 +111,6 @@ export const findRoutes = async (destinationQuery: string, startCoords: [number,
 
     const allTripsWithShapes = addShapesToTrips(allTripsWithStartAndStopFilteredForDuplicates);
 
-    return attachWalkingDirectionsToTrips(allTripsWithShapes, startCoords);
+    // const allTripsWithWalkingDirections = await attachWalkingDirectionsToTrips(allTripsWithShapes, startCoords);
+    return Promise.resolve(allTripsWithShapes);
 }
