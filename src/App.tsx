@@ -56,6 +56,7 @@ const createLineString = (coords = [[0, 0]]): GeoJSON.Feature => {
 const App = () => {
     const [route, setRoute] = useState<GeoJSON.Feature>(createLineString());
     const [walkToRoute, setWalkToRoute] = useState<GeoJSON.Feature>(createLineString());
+    const [walkFromRoute, setWalkFromRoute] = useState<GeoJSON.Feature>(createLineString());
     const [activeTripIndex, setActiveTripIndex] = useState<string>("0");
     const [allTrips, setAllTrips] = useState<FullTrip[]>([]);
     const [userCoordinates, setUserCoordinates] = useState<[number, number]>([0, 0]);
@@ -69,6 +70,7 @@ const App = () => {
         setRoute(createLineString(trip.shapes));
         if (trip?.directionsToStartStop) {
           setWalkToRoute(createLineString(trip.directionsToStartStop?.routes[0]?.geometry.coordinates));
+          setWalkFromRoute(createLineString(trip.directionsFromEndStop?.routes[0]?.geometry.coordinates));
         }
       }
     }, [activeTripIndex, destinationQuery]);
@@ -81,6 +83,7 @@ const App = () => {
           setRoute(createLineString(potentialTrips[0].shapes));
           if (potentialTrips[0]?.directionsToStartStop) {
             setWalkToRoute(createLineString(potentialTrips[0].directionsToStartStop?.routes[0]?.geometry.coordinates));
+            setWalkFromRoute(createLineString(potentialTrips[0].directionsFromEndStop?.routes[0]?.geometry.coordinates));
           }
         });
       }
@@ -104,8 +107,11 @@ const App = () => {
           <ShapeSource id="route-source" shape={route}>
             <LineLayer id="route-layer" style={styles.routeLineLayer} />
           </ShapeSource>
-          <ShapeSource id="walk-source" shape={walkToRoute}>
-            <LineLayer id="walk-layer" style={styles.walkLineLayer} />
+          <ShapeSource id="walk-to-source" shape={walkToRoute}>
+            <LineLayer id="walk-to-layer" style={styles.walkLineLayer} />
+          </ShapeSource>
+          <ShapeSource id="walk-from-source" shape={walkFromRoute}>
+            <LineLayer id="walk-from-layer" style={styles.walkLineLayer} />
           </ShapeSource>
           {stops.map((value: BusStop) => {
             return (

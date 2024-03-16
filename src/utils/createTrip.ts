@@ -8,8 +8,8 @@ import { getWalkingDirections } from "../apis/MapboxDirectionsAPI";
 
 export interface FullTrip {
     tripUpdate: TripUpdate;
-    startStop: string;
-    endStop: string;
+    startStop?: string;
+    endStop?: string;
     shapes?: [number, number][]
     directionsToStartStop?: WalkingDirections;
     directionsFromEndStop?: WalkingDirections;
@@ -17,8 +17,34 @@ export interface FullTrip {
 
 /** Lookup location using the Mapbox API */
 const lookupQuery = (query: string): [number, number] => {
-    // SEC Coordinates hardcoded
-    return [-71.126115, 42.363483];
+    // Lowell Coords: return [-71.118500, 42.371306];
+    // SEC Coordinates hardcoded return [-71.126115, 42.363483];
+    return [-71.118500, 42.371306];
+}
+
+const findAllCombinationsOfStartAndStopBusRoutes = (startStops: string[], endStops: string[]): [string, string][] => {
+    const combinationsOfStartAndStops: [string, string][] = [];
+    startStops.forEach((startStop: string) => {
+        endStops.forEach((endStop: string) => {
+            combinationsOfStartAndStops.push([startStop, endStop]);
+        });
+    });
+    return combinationsOfStartAndStops;
+}
+
+const findActiveTripsThatHaveBothStartAndEndBusRoute = (busRouteCombinations: [string, string][], tripUpdates: TripUpdate[]): FullTrip[] => {
+    const initialFullTrips: FullTrip[] = tripUpdates.map((tripUpdate) => { return { tripUpdate }});
+    const finalFullTrips: FullTrip[] = [];
+    busRouteCombinations.forEach((busRouteCombo) => {
+        const potentialTrips = initialFullTrips.reduce((filteredFullTrips, fullTrip) => {
+            if (busRouteCombo.every((busStopId) => fullTrip.tripUpdate.trip_update.stop_time_update.some(time_update => time_update.stop_id === busStopId))) {
+                filteredFullTrips.push({ ...fullTrip, startStop: busRouteCombo[0], endStop: busRouteCombo[1] })
+            }
+            return filteredFullTrips;
+        }, [] as FullTrip[]);
+        finalFullTrips.push(...potentialTrips);
+    });
+    return finalFullTrips;
 }
 
 /** This could be adapted to allow for mulitiple end points */
@@ -92,25 +118,30 @@ export const addShapesToTrips = (fullTrips: FullTrip[]): FullTrip[] => {
     return updatedFullTrips;
 }
 
-const attachWalkingDirectionsToTrips = async (trips: FullTrip[], userCoords: [number, number]): Promise<FullTrip[]> => {
+const attachWalkingDirectionsToTrips = async (trips: FullTrip[], userCoords: [number, number], coordsOfDestination: [number, number]): Promise<FullTrip[]> => {
     return Promise.all(trips.map(async (trip) => {
-        const busStopCoords = getCoordinatesFromBusStopId(trip.startStop);
-        const walkingDirections = await getWalkingDirections(userCoords, busStopCoords);
-        return { ...trip, directionsToStartStop: walkingDirections }
+        const startBusStopCoords = getCoordinatesFromBusStopId(trip.startStop);
+        const walkingDirectionsToStop = await getWalkingDirections(userCoords, startBusStopCoords);
+
+        const endBusStopCoords = getCoordinatesFromBusStopId(trip.endStop);
+        const walkingDirectionsFromStop = await getWalkingDirections(endBusStopCoords, coordsOfDestination);
+
+        return { ...trip, directionsToStartStop: walkingDirectionsToStop, directionsFromEndStop: walkingDirectionsFromStop }
     }));
 }
 
 export const findRoutes = async (destinationQuery: string, startCoords: [number, number], tripUpdates: TripUpdate[]): Promise<FullTrip[]> => {
     const coordsOfDestination = lookupQuery(destinationQuery);
-    const destinationStop = findClosestStopIdToCoordinates(coordsOfDestination);
-    const allTripsWithDestinationStop = findActiveTripsThatHaveStopId(destinationStop, tripUpdates);
+    const potentialStops = kClosestStops(coordsOfDestination, 8);
     const potentialStarts = kClosestStops(startCoords, 8);
-
-    const allTripsWithStartAndStop = findAllPotentialTrips(potentialStarts, destinationStop, allTripsWithDestinationStop);
+    const potentialBusRouteCombinations = findAllCombinationsOfStartAndStopBusRoutes(potentialStarts.map(busStop => busStop.stop_id), potentialStops.map(busStop => busStop.stop_id));
+    
+    const allTripsWithStartAndStop = findActiveTripsThatHaveBothStartAndEndBusRoute(potentialBusRouteCombinations, tripUpdates);
     const allTripsWithStartAndStopFilteredForDuplicates = filterTripsOnSameRoute(allTripsWithStartAndStop);
-
     const allTripsWithShapes = addShapesToTrips(allTripsWithStartAndStopFilteredForDuplicates);
 
     // const allTripsWithWalkingDirections = await attachWalkingDirectionsToTrips(allTripsWithShapes, startCoords);
     return Promise.resolve(allTripsWithShapes);
+    // return attachWalkingDirectionsToTrips(allTripsWithShapes, startCoords, coordsOfDestination);
 }
+
