@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Image } from 'react-native'
+import { View, Image, TouchableOpacity } from 'react-native'
 import MapboxGL, { MapView, Camera, ShapeSource, LineLayer, PointAnnotation, UserLocation } from '@rnmapbox/maps';
 import { BusStop, stops } from '../static_data/stops';
 
@@ -22,24 +22,32 @@ interface Props {
 
 const Stop = (props: Props) => {
     const { id, isColored } = props;
+    const [isViewable, setIsViewable] = useState<boolean>(false);
     const pointAnnotation = useRef<PointAnnotation>(null);
     const stopObject: BusStop = stops.find(stop => stop.stop_id === id);
     const coord: [number, number] = [stopObject.stop_lon, stopObject.stop_lat]
 
     const uri = isColored ? 'https://www.clipartmax.com/png/small/46-463589_google-map-pin-yellow-google-map-pin.png' : 'https://www.clipartmax.com/png/middle/5-51442_white-map-pin-png.png'
+    
+    const handleSelected = () => {
+      console.log(id);
+      setIsViewable(true);
+  };
+    
     return (
         <PointAnnotation
             id={id}
             coordinate={coord}
             ref={pointAnnotation}
+            onSelected={handleSelected}
          >
         <View>
-            <Image
-            source={{ uri: uri }}
-            style={{ height: 30, width: 20 }}
-            onLoad={() => pointAnnotation.current?.refresh()}
-            fadeDuration={0}
-            />
+              <Image
+              source={{ uri: uri }}
+              style={{ height: 30, width: 20 }}
+              onLoad={() => pointAnnotation.current?.refresh()}
+              fadeDuration={0}
+              />
         </View>
     </PointAnnotation>
     );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Modal, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Modal, Text, StyleSheet, TouchableOpacity, Touchable } from 'react-native'
 import MapboxGL, { MapView, Camera, ShapeSource, LineLayer, UserLocation } from '@rnmapbox/maps';
 import Stop from './components/Stop';
 import { stops, BusStop } from './static_data/stops';
@@ -9,6 +9,8 @@ import { findRoutes, FullTrip } from './utils/createTrip';
 import { SearchBar } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
 import RouteSelector from './components/RouteSelector';
+import { VisibilityOff } from '@mui/icons-material';
+import { fontSize } from '@mui/system';
 
 
 MapboxGL.setAccessToken('sk.eyJ1Ijoibm90bHVja3ljaGFybSIsImEiOiJjbHR2Z20xc24xZjhnMmpvYmg0cjJ1a2s3In0.Pn8n4Ex5s85fYt-hJ55H9Q' || "");
@@ -32,6 +34,14 @@ const styles = {
     fontSize: 18,
   },
 
+  routeContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'left',
+    backgroundColor: 'gray',
+    height: 24,
+  },
+
   heading: {
     fontSize: 24,
     fontWeight: 'bold'
@@ -40,7 +50,7 @@ const styles = {
   popUp: {
     width: '100%',
     height: 'auto',
-    backgroundColor: 'white',
+    backgroundColor: '#eee',
     borderRadius: 20,
     padding: 20,
     alignItems: 'left',
@@ -57,6 +67,23 @@ const styles = {
     backgroundColor: '#ddd',
     padding: 10,
     borderRadius: 10,
+  },
+
+  goButton: {
+    marginLeft: 100,
+    backgroundColor: '#cfc',
+    padding: 10,
+    borderRadius: 10,
+    align: 'right'
+  },
+
+  routePoint: {
+    marginTop: 3,
+    marginLeft: 20,
+    backgroundColor: '#ddd',
+    padding: 15,
+    borderRadius: 10,
+    width: "80%"
   },
 
   routeLineLayer: {
@@ -105,6 +132,7 @@ const App = () => {
     const [userCoordinates, setUserCoordinates] = useState<[number, number]>([0, 0]);
     const [searchText, setSearchText] = useState<string>("");
     const [destinationQuery, setDestinationQuery] = useState<string>("");
+    const [source, setSource] = useState<[number, number]>([0, 0]);
     const [destination, setDestination] = useState<BusStop>();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [suggestions, setSuggestions] = useState<BusStop[]>([]);
@@ -119,6 +147,7 @@ const App = () => {
         setSuggestions(filtered);
       }
     };
+
     // Update the route options when a user selects a new one.
     useEffect(() => {
       if (destinationQuery !== "" && allTrips.length >= 1) {
@@ -177,7 +206,7 @@ const App = () => {
               ))}
           </View>
           <Camera followZoomLevel={14} followUserLocation animationMode={'flyTo'} />
-          <UserLocation showsUserHeadingIndicator onUpdate={(loc: MapboxGL.Location) => setUserCoordinates([loc.coords.longitude, loc.coords.latitude])} />
+          <UserLocation showsUserHeadingIndicator onUpdate={(loc: MapboxGL.Location) => {setUserCoordinates([loc.coords.longitude, loc.coords.latitude]); setSource(userCoordinates)}} />
           <ShapeSource id="route-source" shape={route}>
             <LineLayer id="route-layer" style={styles.routeLineLayer} />
           </ShapeSource>
@@ -189,7 +218,7 @@ const App = () => {
           </ShapeSource>
           {stops.map((value: BusStop) => {
             return (
-              <Stop isColored={false} key={value.stop_id} id={value.stop_id} />
+              <Stop isColored={false} key={value.stop_id} id={value.stop_id}/>
             )
           })}
           {allTrips.length >= 1 && (
@@ -209,7 +238,21 @@ const App = () => {
           <View style={styles.popupContainer}>
             <View style={styles.popUp}>
               <Text style={styles.popupText}>Directions</Text>
-              <Text style={styles.routeText}>{destination?.stop_name}</Text>
+              <View style={styles.routePoint}>
+                <TouchableOpacity>
+                  <Text>From: My Location</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.routePoint}>
+                <TouchableOpacity>
+                  <Text>To: {destination?.stop_name}</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{...styles.routePoint, marginTop: 25, flexDirection: 'row', backgroundColor: "#fff"}}>
+                <Text style={{fontSize: 24, fontWeight: 'bold', marginRight: 5}}>15 </Text>
+                <Text style={{fontSize: 24}}>min</Text>
+                <Text style={{...styles.goButton, fontSize: 24}}>Go!</Text>
+              </View>
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setIsPopupVisible(false)}
