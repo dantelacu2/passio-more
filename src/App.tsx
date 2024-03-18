@@ -76,6 +76,11 @@ const styles = {
     borderRadius: 10,
   },
 
+  button: {
+    padding: 10,
+    borderRadius: 10,
+  },
+
   routePoint: {
     marginTop: 3,
     marginLeft: 0,
@@ -111,15 +116,13 @@ const styles = {
   },
   // Styles for Stop View
   scrollView: {
-    maxHeight: 200, // Adjust based on your needs
+    maxHeight: 200,
   },
   departureItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'left',
     paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
   },
   departureTime: {
     fontSize: 16,
@@ -133,10 +136,14 @@ const styles = {
   },
   disclaimerText: {
     color: 'red',
-    fondSize: 12,
+    fontSize: 12,
   },
   disclaimer: {
     marginLeft: 35
+  },
+  boxItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   }
 };
 
@@ -167,6 +174,8 @@ const App = () => {
     const [suggestions, setSuggestions] = useState<BusStop[]>([]);
     const [stopVisible, setStopVisible] = useState<boolean>(false);
     const [currStop, setCurrStop] = useState<BusStop>();
+    const [innerText, setInnerText] = useState<string>("See More");
+    const [stopAvailabilityIsVisible, setStopAvailabilityIsVisible] = useState<boolean>(false);
 
     const updateSuggestions = (text: string) => {
       if (text.trim() === '') {
@@ -302,36 +311,61 @@ const App = () => {
         </Modal>
         {/* Stop Information */}
         <Modal
-          animationType="slide"
+          animationType=""
           transparent={true}
           visible={stopVisible}
           onRequestClose={() => setStopVisible(false)}
         >
           <View style={styles.popupContainer}>
             <View style={styles.popUp}>
-              <Text style={styles.popupText}>Scheduled Arrivals at {currStop?.stop_name}</Text>
-              <ScrollView style={styles.scrollView}>
-                <View style={styles.departureItem}>
-                  <Text style={styles.departureName}>Allston Loop</Text>
-                  <Text style={styles.departureTime}>5:05 PM</Text>
+              <Text style={styles.popupText}>{currStop?.stop_name}</Text>
+              <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+                <TouchableOpacity 
+                  style={{...styles.button, backgroundColor: '#0F4BFE'}}
+                  onPress={() => {setStopVisible(false); setIsPopupVisible(true); setDestination(currStop)} }>
+                    <Text  style={{color:'white'}}>Directions</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={{...styles.button, backgroundColor: '#ddd', marginLeft: 5}}
+                  onPress={() => {if (!stopAvailabilityIsVisible) {setInnerText("See Less")} else {setInnerText("See More")}; setStopAvailabilityIsVisible(!stopAvailabilityIsVisible)} }>
+                    <Text>{innerText}</Text>
+                </TouchableOpacity>
+              </View>
+              { stopAvailabilityIsVisible &&
+              <View style={{width: "100%"}}>
+                <Text style={styles.popupText}>Scheduled Arrivals at {currStop?.stop_name}</Text>
+                <View style={{...styles.routePoint, backgroundColor: '#fff'}}>
+                  <ScrollView style={styles.scrollView}>
+                    <View style={styles.boxItem}>
+                      <View style={styles.departureItem}>
+                        <Text style={styles.departureName}>Allston Loop</Text>
+                        <Text style={styles.departureTime}>5:05 PM</Text>
+                      </View>
+                      <View style={styles.disclaimer}>
+                        <Text style={styles.disclaimerText}>Now Arriving at 5:08 PM</Text>
+                      </View>
+                    </View>
+                    <View style={styles.boxItem}>
+                      <View style={styles.departureItem}>
+                        <Text style={styles.departureName}>Quad SEC Express</Text>
+                        <Text style={styles.departureTime}>5:15 PM</Text>
+                      </View>
+                    </View>
+                    <View style={styles.boxItem}>
+                      <View style={styles.departureItem}>
+                        <Text style={styles.departureName}>Allston Loop</Text>
+                        <Text style={styles.departureTime}>5:35 PM</Text>
+                      </View>
+                      <View style={styles.disclaimer}>
+                        <Text style={{...styles.disclaimerText, color: 'green'}}>
+                          Now Arriving at 5:34 PM
+                        </Text>
+                      </View>
+                    </View>
+                  </ScrollView>
                 </View>
-                <View style={styles.disclaimer}>
-                  <Text style={styles.disclaimerText}>Now Arriving at 5:08 PM</Text>
-                </View>
-                <View style={styles.departureItem}>
-                  <Text style={styles.departureName}>Quad SEC Express</Text>
-                  <Text style={styles.departureTime}>5:15 PM</Text>
-                </View>
-                <View style={styles.departureItem}>
-                  <Text style={styles.departureName}>Allston Loop</Text>
-                  <Text style={styles.departureTime}>5:35 PM</Text>
-                </View>
-                <View style={styles.disclaimer}>
-                  <Text style={{...styles.disclaimerText, color: 'green'}}>
-                    Now Arriving at 5:34 PM
-                  </Text>
-                </View>
-              </ScrollView>
+              </View>
+              }
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setStopVisible(false)}
