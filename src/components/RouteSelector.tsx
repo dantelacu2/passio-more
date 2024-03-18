@@ -16,7 +16,7 @@ const RouteSelector = (props: Props) => {
   const data = props.fullTrips.map((fullTrip, fullTripIndex) => {
     const routeId = trips.find((staticTrip) => staticTrip.trip_id.toString() === fullTrip.tripUpdate.trip_update.trip.trip_id)?.route_id || "";
     return {
-        label: routes.find((route) => route.route_id === routeId)?.route_long_name,
+        label: routes.find((route) => route.route_id === routeId)?.route_long_name + "  Arrives: " + fullTrip?.nextBusArrivalTime?.toString() + " min   Walking: " + fullTrip?.totalWalkingTime?.toString() + " min",
         value: fullTripIndex.toString(),
     };
   });
@@ -33,7 +33,6 @@ const RouteSelector = (props: Props) => {
       labelField="label"
       valueField="value"
       placeholder="Select item"
-      searchPlaceholder="Search..."
       value={props.activeTripIndex}
       onChange={item => {
         props.setActiveTripIndex(item.value);

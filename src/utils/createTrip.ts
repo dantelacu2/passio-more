@@ -13,6 +13,8 @@ export interface FullTrip {
     shapes?: [number, number][]
     directionsToStartStop?: WalkingDirections;
     directionsFromEndStop?: WalkingDirections;
+    nextBusArrivalTime?: number;
+    totalWalkingTime?: number;
 }
 
 /** Lookup location using the Mapbox API */
@@ -118,6 +120,15 @@ export const addShapesToTrips = (fullTrips: FullTrip[]): FullTrip[] => {
     return updatedFullTrips;
 }
 
+const attachTimeEstimatesToTrips = (trips: FullTrip[]): FullTrip[] => {
+    return trips.map((trip) => {
+        const arrivalTimeOfBus = trip.tripUpdate.trip_update.stop_time_update.find(time_update => time_update.stop_id === trip.startStop)?.arrival?.time;
+        // hardcode current timestamp
+        const nextBusArrivalTime = Math.round((arrivalTimeOfBus - 1709652743) / 60);
+        return { ...trip, nextBusArrivalTime }
+    });
+}
+
 const attachWalkingDirectionsToTrips = async (trips: FullTrip[], userCoords: [number, number], coordsOfDestination: [number, number]): Promise<FullTrip[]> => {
     return Promise.all(trips.map(async (trip) => {
         const startBusStopCoords = getCoordinatesFromBusStopId(trip.startStop);
@@ -126,7 +137,9 @@ const attachWalkingDirectionsToTrips = async (trips: FullTrip[], userCoords: [nu
         const endBusStopCoords = getCoordinatesFromBusStopId(trip.endStop);
         const walkingDirectionsFromStop = await getWalkingDirections(endBusStopCoords, coordsOfDestination);
 
-        return { ...trip, directionsToStartStop: walkingDirectionsToStop, directionsFromEndStop: walkingDirectionsFromStop }
+        const totalWalkingTime = Math.round((walkingDirectionsToStop.routes[0].duration / 60) + (walkingDirectionsFromStop.routes[0].duration / 60));
+
+        return { ...trip, directionsToStartStop: walkingDirectionsToStop, directionsFromEndStop: walkingDirectionsFromStop, totalWalkingTime, }
     }));
 }
 
@@ -140,8 +153,9 @@ export const findRoutes = async (destinationQuery: string, startCoords: [number,
     const allTripsWithStartAndStopFilteredForDuplicates = filterTripsOnSameRoute(allTripsWithStartAndStop);
     const allTripsWithShapes = addShapesToTrips(allTripsWithStartAndStopFilteredForDuplicates);
 
-    // const allTripsWithWalkingDirections = await attachWalkingDirectionsToTrips(allTripsWithShapes, startCoords);
-    return Promise.resolve(allTripsWithShapes);
-    // return attachWalkingDirectionsToTrips(allTripsWithShapes, startCoords, coordsOfDestination);
+    const allTripsWithWalkingDirections = await attachWalkingDirectionsToTrips(allTripsWithShapes, startCoords, coordsOfDestination);
+    const allTripsWithEverything = attachTimeEstimatesToTrips(allTripsWithWalkingDirections);
+    // return Promise.resolve(allTripsWithShapes);
+    return allTripsWithEverything;
 }
 
