@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Modal, Text, StyleSheet, TouchableOpacity, Touchable } from 'react-native'
+import { View, Modal, Text, StyleSheet, TouchableOpacity, Touchable, ScrollView } from 'react-native'
 import MapboxGL, { MapView, Camera, ShapeSource, LineLayer, UserLocation } from '@rnmapbox/maps';
 import Stop from './components/Stop';
 import { stops, BusStop } from './static_data/stops';
@@ -12,8 +12,8 @@ import RouteSelector from './components/RouteSelector';
 import { VisibilityOff } from '@mui/icons-material';
 import { fontSize } from '@mui/system';
 
-
-MapboxGL.setAccessToken(process.env.MAPBOX_API_KEY || "");
+// process.env.MAPBOX_API_KEY
+MapboxGL.setAccessToken('sk.eyJ1Ijoibm90bHVja3ljaGFybSIsImEiOiJjbHR2Z20xc24xZjhnMmpvYmg0cjJ1a2s3In0.Pn8n4Ex5s85fYt-hJ55H9Q' || "");
 
 const styles = {
   matchParent: {
@@ -74,16 +74,16 @@ const styles = {
     backgroundColor: '#cfc',
     padding: 10,
     borderRadius: 10,
-    align: 'right'
   },
 
   routePoint: {
     marginTop: 3,
-    marginLeft: 20,
+    marginLeft: 0,
+    marginRight: 10,
     backgroundColor: '#ddd',
     padding: 15,
     borderRadius: 10,
-    width: "80%"
+    width: "100%"
   },
 
   routeLineLayer: {
@@ -108,6 +108,35 @@ const styles = {
   searchBarInput: {
     backgroundColor: 'white',
     paddingLeft: 10,
+  },
+  // Styles for Stop View
+  scrollView: {
+    maxHeight: 200, // Adjust based on your needs
+  },
+  departureItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'left',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  departureTime: {
+    fontSize: 16,
+    color: '#666',
+    marginLeft: 25,
+  },
+  departureName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  disclaimerText: {
+    color: 'red',
+    fondSize: 12,
+  },
+  disclaimer: {
+    marginLeft: 35
   }
 };
 
@@ -136,6 +165,8 @@ const App = () => {
     const [destination, setDestination] = useState<BusStop>();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [suggestions, setSuggestions] = useState<BusStop[]>([]);
+    const [stopVisible, setStopVisible] = useState<boolean>(false);
+    const [currStop, setCurrStop] = useState<BusStop>();
 
     const updateSuggestions = (text: string) => {
       if (text.trim() === '') {
@@ -173,7 +204,6 @@ const App = () => {
         });
       }
     }, [destinationQuery]);
-
     return (
       <>
         <MapView style={styles.matchParent}>
@@ -198,6 +228,7 @@ const App = () => {
                   onPress={() => {
                     setSearchText(suggestion.stop_name);
                     setDestination(suggestion);
+                    setDestinationQuery(suggestion.stop_name)
                     setIsPopupVisible(true);
                     setSuggestions([]);
                   }}>
@@ -218,7 +249,13 @@ const App = () => {
           </ShapeSource>
           {stops.map((value: BusStop) => {
             return (
-              <Stop isColored={false} key={value.stop_id} id={value.stop_id}/>
+              <Stop 
+                isColored={false} 
+                key={value.stop_id} 
+                id={value.stop_id} 
+                name={value.stop_name} 
+                onPress={() => {setStopVisible(true); setCurrStop(value)}}
+              />
             )
           })}
           {allTrips.length >= 1 && (
@@ -229,6 +266,7 @@ const App = () => {
             />
           )}
         </MapView>
+        {/* Route Preview */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -256,6 +294,47 @@ const App = () => {
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setIsPopupVisible(false)}
+              >
+                <Text>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+        {/* Stop Information */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={stopVisible}
+          onRequestClose={() => setStopVisible(false)}
+        >
+          <View style={styles.popupContainer}>
+            <View style={styles.popUp}>
+              <Text style={styles.popupText}>Scheduled Arrivals at {currStop?.stop_name}</Text>
+              <ScrollView style={styles.scrollView}>
+                <View style={styles.departureItem}>
+                  <Text style={styles.departureName}>Allston Loop</Text>
+                  <Text style={styles.departureTime}>5:05 PM</Text>
+                </View>
+                <View style={styles.disclaimer}>
+                  <Text style={styles.disclaimerText}>Now Arriving at 5:08 PM</Text>
+                </View>
+                <View style={styles.departureItem}>
+                  <Text style={styles.departureName}>Quad SEC Express</Text>
+                  <Text style={styles.departureTime}>5:15 PM</Text>
+                </View>
+                <View style={styles.departureItem}>
+                  <Text style={styles.departureName}>Allston Loop</Text>
+                  <Text style={styles.departureTime}>5:35 PM</Text>
+                </View>
+                <View style={styles.disclaimer}>
+                  <Text style={{...styles.disclaimerText, color: 'green'}}>
+                    Now Arriving at 5:34 PM
+                  </Text>
+                </View>
+              </ScrollView>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setStopVisible(false)}
               >
                 <Text>Close</Text>
               </TouchableOpacity>
