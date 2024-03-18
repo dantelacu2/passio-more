@@ -13,7 +13,7 @@ import { VisibilityOff } from '@mui/icons-material';
 import { fontSize } from '@mui/system';
 
 // process.env.MAPBOX_API_KEY
-MapboxGL.setAccessToken('sk.eyJ1Ijoibm90bHVja3ljaGFybSIsImEiOiJjbHR2Z20xc24xZjhnMmpvYmg0cjJ1a2s3In0.Pn8n4Ex5s85fYt-hJ55H9Q' || "");
+MapboxGL.setAccessToken(process.env.MAPBOX_API_KEY || "");
 
 const styles = {
   matchParent: {
