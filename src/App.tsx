@@ -3,6 +3,9 @@ import { View, Modal, Text, StyleSheet, TouchableOpacity, Touchable, ScrollView 
 import MapboxGL, { MapView, Camera, ShapeSource, LineLayer, UserLocation } from '@rnmapbox/maps';
 import Stop from './components/Stop';
 import { stops, BusStop } from './static_data/stops';
+import { times, Time } from './static_data/times';
+import { trips, Trip } from './static_data/trips';
+import { routes, Route } from './static_data/routes';
 import { getTripUpdates } from './apis/PassioAPI';
 import { getTripUpdatesFromPassioJSON } from './utils/parsePassio';
 import { findRoutes, FullTrip } from './utils/createTrip';
@@ -13,7 +16,7 @@ import { VisibilityOff } from '@mui/icons-material';
 import { fontSize } from '@mui/system';
 
 // process.env.MAPBOX_API_KEY
-MapboxGL.setAccessToken(process.env.MAPBOX_API_KEY || "");
+MapboxGL.setAccessToken('sk.eyJ1Ijoibm90bHVja3ljaGFybSIsImEiOiJjbHR2Z20xc24xZjhnMmpvYmg0cjJ1a2s3In0.Pn8n4Ex5s85fYt-hJ55H9Q' || "");
 
 const styles = {
   matchParent: {
@@ -158,6 +161,7 @@ const createLineString = (coords = [[0, 0]]): GeoJSON.Feature => {
   }
 };
 
+var stopTimes : Time[ ]= [];
 
 const App = () => {
     const [route, setRoute] = useState<GeoJSON.Feature>(createLineString());
@@ -176,6 +180,49 @@ const App = () => {
     const [currStop, setCurrStop] = useState<BusStop>();
     const [innerText, setInnerText] = useState<string>("See More");
     const [stopAvailabilityIsVisible, setStopAvailabilityIsVisible] = useState<boolean>(false);
+    // const [stopTimes, setStopTimes] = useState<Time[]>([]);
+
+    const getTripName = (trip_id: number) => {
+        const thisTrip = trips.filter(trip => trip_id == trip.trip_id);
+        const routeId = thisTrip[0].route_id || 0;
+        if (routeId == 0) return "";
+        const thisRoute = routes.filter(route => routeId == route.route_id);
+        const tripName = thisRoute[0].route_long_name || "";
+        return tripName;
+    };
+
+    const filterByStopId = (stop_id: string) => {
+      const filtered = times.filter(time => stop_id == time.stop_id);
+      stopTimes = filtered;
+    };
+
+    const getCurrentTime = () => {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0'); 
+      const minutes = now.getMinutes().toString().padStart(2, '0'); 
+      const seconds = now.getSeconds().toString().padStart(2, '0'); 
+    
+      return `${hours}:${minutes}:${seconds}`;
+    };
+
+    const findClosestArrivals = (currTime : string) => {
+      const convertToSeconds = (time : string) => {
+        const [hours, minutes, seconds] = time.split(':').map(Number);
+        return hours * 3600 + minutes * 60 + seconds;
+      };
+      const filteredStopTimes = stopTimes.filter((stopTime) => {
+        const stopTimeSeconds = convertToSeconds(stopTime.arrival_time);
+        return Math.abs(stopTimeSeconds - convertToSeconds(currTime)) <= 900; // within one hour
+      });
+      stopTimes = filteredStopTimes.sort((a, b) => {
+                                          const A_Sec = convertToSeconds(a.arrival_time);
+                                          const B_Sec = convertToSeconds(b.arrival_time);
+                                          if (A_Sec < B_Sec) return -1;
+                                          if (A_Sec > B_Sec) return 1;
+                                          return 0;
+                                          }
+                                        );
+    }
 
     const updateSuggestions = (text: string) => {
       if (text.trim() === '') {
@@ -327,7 +374,13 @@ const App = () => {
                 </TouchableOpacity>
                 <TouchableOpacity 
                   style={{...styles.button, backgroundColor: '#ddd', marginLeft: 5}}
-                  onPress={() => {if (!stopAvailabilityIsVisible) {setInnerText("See Less")} else {setInnerText("See More")}; setStopAvailabilityIsVisible(!stopAvailabilityIsVisible)} }>
+                  onPress={() => {
+                    if (!stopAvailabilityIsVisible) {setInnerText("See Less")} else {setInnerText("See More")}; 
+                    setStopAvailabilityIsVisible(!stopAvailabilityIsVisible);
+                    filterByStopId(currStop?.stop_id || "");
+                    const time = getCurrentTime();
+                    findClosestArrivals(time);
+                  }}>
                     <Text>{innerText}</Text>
                 </TouchableOpacity>
               </View>
@@ -336,8 +389,23 @@ const App = () => {
                 <Text style={styles.popupText}>Scheduled Arrivals at {currStop?.stop_name}</Text>
                 <View style={{...styles.routePoint, backgroundColor: '#fff'}}>
                   <ScrollView style={styles.scrollView}>
-                    <View style={styles.boxItem}>
+                    {stopTimes.length == 0 &&
+                      <View style={styles.boxItem}>
                       <View style={styles.departureItem}>
+                        <Text style={styles.departureName}>No Arrivals</Text>
+                      </View>
+                    </View> 
+                    }
+                    {stopTimes.map((stopTime, key) => (
+                      <View key={key} style={styles.boxItem}>
+                        <View style={styles.departureItem}>
+                          <Text style={styles.departureName}>{getTripName(Number(stopTime?.trip_id))}</Text>
+                          <Text style={styles.departureTime}>{stopTime?.departure_time}</Text>
+                        </View>
+                      </View> 
+                      ))
+                    }
+                      {/* <View style={styles.departureItem}>
                         <Text style={styles.departureName}>Allston Loop</Text>
                         <Text style={styles.departureTime}>5:05 PM</Text>
                       </View>
@@ -360,8 +428,7 @@ const App = () => {
                         <Text style={{...styles.disclaimerText, color: 'green'}}>
                           Now Arriving at 5:34 PM
                         </Text>
-                      </View>
-                    </View>
+                      </View>*/}
                   </ScrollView>
                 </View>
               </View>
