@@ -11,7 +11,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import RouteSelector from './components/RouteSelector';
 
 
-MapboxGL.setAccessToken('sk.eyJ1Ijoibm90bHVja3ljaGFybSIsImEiOiJjbHR2Z20xc24xZjhnMmpvYmg0cjJ1a2s3In0.Pn8n4Ex5s85fYt-hJ55H9Q' || "");
+MapboxGL.setAccessToken(process.env.MAPBOX_API_KEY || "");
 
 const styles = {
   matchParent: {
