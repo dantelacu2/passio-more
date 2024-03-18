@@ -11,7 +11,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import RouteSelector from './components/RouteSelector';
 
 
-MapboxGL.setAccessToken(process.env.MAPBOX_API_KEY || "");
+MapboxGL.setAccessToken('sk.eyJ1Ijoibm90bHVja3ljaGFybSIsImEiOiJjbHR2Z20xc24xZjhnMmpvYmg0cjJ1a2s3In0.Pn8n4Ex5s85fYt-hJ55H9Q' || "");
 
 const styles = {
   matchParent: {
@@ -28,7 +28,12 @@ const styles = {
     fontSize: 24,
   },
 
+  routeText: {
+    fontSize: 18,
+  },
+
   heading: {
+    fontSize: 24,
     fontWeight: 'bold'
   },
 
@@ -164,6 +169,7 @@ const App = () => {
                   onPress={() => {
                     setSearchText(suggestion.stop_name);
                     setDestination(suggestion);
+                    setIsPopupVisible(true);
                     setSuggestions([]);
                   }}>
                   {suggestion.stop_name}
@@ -202,7 +208,8 @@ const App = () => {
         >
           <View style={styles.popupContainer}>
             <View style={styles.popUp}>
-              <Text style={styles.popupText}>{destination?.stop_name}</Text>
+              <Text style={styles.popupText}>Directions</Text>
+              <Text style={styles.routeText}>{destination?.stop_name}</Text>
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setIsPopupVisible(false)}
