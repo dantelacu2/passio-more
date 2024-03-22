@@ -16,7 +16,7 @@ import { VisibilityOff } from '@mui/icons-material';
 import { fontSize } from '@mui/system';
 
 // process.env.MAPBOX_API_KEY
-MapboxGL.setAccessToken('process.env.MAPBOX_API_KEY' || "");
+MapboxGL.setAccessToken(process.env.MAPBOX_API_KEY || "");
 
 const styles = {
   matchParent: {
@@ -362,7 +362,9 @@ const App = () => {
               <View style={{...styles.routePoint, marginTop: 25, flexDirection: 'row', backgroundColor: "#fff"}}>
                 <Text style={{fontSize: 24, fontWeight: 'bold', marginRight: 5}}>15 </Text>
                 <Text style={{fontSize: 24}}>min</Text>
-                <Text style={{...styles.goButton, fontSize: 24}}>Go!</Text>
+                <TouchableOpacity onPress={() => setDestinationQuery(destination.stop_name || "")}>
+                  <Text style={{...styles.goButton, fontSize: 24}}>Go!</Text>
+                </TouchableOpacity>
               </View>
               <TouchableOpacity
                 style={styles.closeButton}
