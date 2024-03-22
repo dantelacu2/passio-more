@@ -18,6 +18,7 @@ export interface TripUpdate {
     }
 }
 
+export const getStopTimeUpdateFromTripUpdate = (trip : TripUpdate) => { return trip.trip_update.stop_time_update}
 export const getTripUpdatesFromPassioJSON = (responseJson: any): TripUpdate[] => {
     return <TripUpdate[]> responseJson;
 }

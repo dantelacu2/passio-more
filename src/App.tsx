@@ -7,7 +7,7 @@ import { times, Time } from './static_data/times';
 import { trips, Trip } from './static_data/trips';
 import { routes, Route } from './static_data/routes';
 import { getTripUpdates } from './apis/PassioAPI';
-import { getTripUpdatesFromPassioJSON } from './utils/parsePassio';
+import { getTripUpdatesFromPassioJSON, TripUpdate, StopTimeUpdate, getStopTimeUpdateFromTripUpdate } from './utils/parsePassio';
 import { findRoutes, FullTrip } from './utils/createTrip';
 import { SearchBar } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -16,7 +16,7 @@ import { VisibilityOff } from '@mui/icons-material';
 import { fontSize } from '@mui/system';
 
 // process.env.MAPBOX_API_KEY
-MapboxGL.setAccessToken(process.env.MAPBOX_API_KEY || "");
+MapboxGL.setAccessToken('process.env.MAPBOX_API_KEY' || "");
 
 const styles = {
   matchParent: {
@@ -181,6 +181,23 @@ const App = () => {
     const [innerText, setInnerText] = useState<string>("See More");
     const [stopAvailabilityIsVisible, setStopAvailabilityIsVisible] = useState<boolean>(false);
     // const [stopTimes, setStopTimes] = useState<Time[]>([]);
+
+    const getLiveStopData = (trip_id: number) => {
+      console.log("Initial", trip_id);
+      const tripUpdates = getTripUpdatesFromPassioJSON(getTripUpdates());
+      // tripUpdates.map(trip => console.log(trip.trip_update.trip.trip_id));
+      const thisTripStopUpdates = (tripUpdates.filter(trip => trip_id == (Number(trip.trip_update.trip.trip_id))));
+      if (thisTripStopUpdates.length > 0) { return thisTripStopUpdates; }
+    }
+
+    const compareLiveData = (trip_id: number, stop_id: string) => {
+      // getLiveStopData(trip_id);
+      const liveData = getLiveStopData(trip_id);
+      
+      // const thisStop = liveData.filter((stop) => {
+      //   stop.stop_id == stop_id
+      // })
+    }
 
     const getTripName = (trip_id: number) => {
         const thisTrip = trips.filter(trip => trip_id == trip.trip_id);
@@ -380,6 +397,7 @@ const App = () => {
                     filterByStopId(currStop?.stop_id || "");
                     const time = getCurrentTime();
                     findClosestArrivals(time);
+                    compareLiveData(670543, currStop?.stop_id || "");
                   }}>
                     <Text>{innerText}</Text>
                 </TouchableOpacity>
